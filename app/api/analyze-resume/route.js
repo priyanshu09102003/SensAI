@@ -57,16 +57,17 @@ async function extractTextFromPDF(pdfBuffer) {
       console.log('⚠️ pdf-parse failed:', pdfParseError.message);
     }
 
-    // Method 2: Enhanced pdfjs-dist with better text positioning
+    // Method 2: Enhanced pdfjs-dist with better text positioning - FIXED IMPORT
     try {
-      const pdfjs = require('pdfjs-dist/legacy/build/pdf.js');
+      // Fixed import path for pdfjs-dist
+      const pdfjs = require('pdfjs-dist');
       
       const loadingTask = pdfjs.getDocument({
         data: new Uint8Array(pdfBuffer),
         useSystemFonts: true,
         disableFontFace: true,
-        cMapUrl: 'https://cdn.jsdelivr.net/npm/pdfjs-dist@2.16.105/cmaps/',
-        cMapPacked: true
+        // Removed problematic cMapUrl and cMapPacked for deployment
+        verbosity: 0
       });
       
       const pdf = await loadingTask.promise;
@@ -672,7 +673,8 @@ export async function GET() {
       "Enhanced keyword matching algorithms",
       "Better handling of scanned/image PDFs",
       "More accurate scoring system",
-      "Improved section detection"
+      "Improved section detection",
+      "Fixed PDF.js import for deployment compatibility"
     ]
   });
 }
