@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import ReactFlow, { 
   MiniMap, 
@@ -22,7 +22,8 @@ const nodeTypes = {
   turbo: CustomRoadmapNode,
 };
 
-const page = () => {
+// Separate component that uses useSearchParams
+const RoadmapContent = () => {
   const router = useRouter();
   const searchParams = useSearchParams();
   const skill = searchParams.get('skill');
@@ -190,4 +191,23 @@ const page = () => {
   );
 };
 
-export default page;
+// Loading fallback component
+const RoadmapFallback = () => (
+  <div className="min-h-screen flex items-center justify-center">
+    <div className="text-center">
+      <Loader2 className="w-8 h-8 animate-spin mx-auto mb-4" />
+      <p className="text-lg font-semibold">Loading roadmap...</p>
+    </div>
+  </div>
+);
+
+// Main page component with Suspense boundary
+const RoadmapPage = () => {
+  return (
+    <Suspense fallback={<RoadmapFallback />}>
+      <RoadmapContent />
+    </Suspense>
+  );
+};
+
+export default RoadmapPage;
